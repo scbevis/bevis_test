@@ -1,1 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>黑色背景圖框頁面</title>
+    <style>
+        /* 設定頁面背景為黑色 */
+        body {
+            background-color: black;
+            margin: 0;
+            padding: 50px;
+            display: flex;
+            flex-wrap: wrap; /* 允許換行 */
+            justify-content: center; /* 水平置中 */
+            gap: 30px; /* 圖框之間的間距 */
+            min-height: 100vh;
+            box-sizing: border-box;
+            align-items: center; /* 垂直置中 */
+        }
 
+        /* 圖框樣式 */
+        .frame {
+            width: 250px;
+            height: 250px;
+            background-color: #1a1a1a; /* 比背景稍亮，區分圖框 */
+            border: 2px dashed #666; /* 虛線邊框，表示此處為空位 */
+            border-radius: 8px; /* 圓角 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #666;
+            font-family: sans-serif;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        /* 滑鼠懸停效果 (可選) */
+        .frame:hover {
+            border-color: #fff;
+            color: #fff;
+            transform: scale(1.05);
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="frame">圖框 1</div>
+    <div class="frame">圖框 2</div>
+    <div class="frame">圖框 3</div>
+    <div class="frame">圖框 4</div>
+    <div class="frame">圖框 5</div>
+
+</body>
+</html>
