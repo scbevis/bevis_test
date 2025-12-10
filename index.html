@@ -3,55 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>黑色背景圖框頁面</title>
+    <title>黑色背景圖框 - 圖片上傳</title>
     <style>
-        /* 設定頁面背景為黑色 */
+        /* CSS 樣式 (與前一個版本相同) */
         body {
             background-color: black;
             margin: 0;
             padding: 50px;
             display: flex;
-            flex-wrap: wrap; /* 允許換行 */
-            justify-content: center; /* 水平置中 */
-            gap: 30px; /* 圖框之間的間距 */
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
             min-height: 100vh;
             box-sizing: border-box;
-            align-items: center; /* 垂直置中 */
+            align-items: center;
+            font-family: sans-serif;
+            color: white;
         }
 
-        /* 圖框樣式 */
         .frame {
             width: 250px;
             height: 250px;
-            background-color: #1a1a1a; /* 比背景稍亮，區分圖框 */
-            border: 2px dashed #666; /* 虛線邊框，表示此處為空位 */
-            border-radius: 8px; /* 圓角 */
+            background-color: #1a1a1a;
+            border: 2px dashed #666;
+            border-radius: 8px;
             display: flex;
+            flex-direction: column; /* 允許內容垂直排列 */
             justify-content: center;
             align-items: center;
             color: #666;
-            font-family: sans-serif;
-            font-size: 1.2rem;
+            cursor: pointer;
+            overflow: hidden; /* 確保圖片不超出邊框 */
+            position: relative;
             transition: all 0.3s ease;
         }
 
-        /* 滑鼠懸停效果 (可選) */
         .frame:hover {
             border-color: #fff;
             color: #fff;
             transform: scale(1.05);
-            cursor: pointer;
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 隱藏原生檔案輸入欄位 */
+        .file-input {
+            display: none;
+        }
+
+        /* 顯示已上傳的圖片 */
+        .uploaded-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 確保圖片覆蓋整個框架 */
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* 錯誤訊息 */
+        .error-message {
+            color: red;
+            background-color: #330000;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            position: absolute;
+            bottom: -30px; /* 放在框架下方 */
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .error-message.visible {
+            opacity: 1;
         }
     </style>
 </head>
 <body>
 
-    <div class="frame">圖框 1</div>
-    <div class="frame">圖框 2</div>
-    <div class="frame">圖框 3</div>
-    <div class="frame">圖框 4</div>
-    <div class="frame">圖框 5</div>
+    <div class="frame" id="frame1" onclick="document.getElementById('file1').click()">
+        點擊上傳圖片 (Max 1MB)
+        <input type="file" id="file1" class="file-input" accept="image/*" onchange="handleFileUpload(event, 'frame1', 'file1')">
+    </div>
+
+    <div class="frame" id="frame2" onclick="document.getElementById('file2').click()">
+        點擊上傳圖片 (Max 1MB)
+        <input type="file" id="file2" class="file-input" accept="image/*" onchange="handleFileUpload(event, 'frame2', 'file2')">
+    </div>
+
+    <div class="frame" id="frame3" onclick="document.getElementById('file3').click()">
+        點擊上傳圖片 (Max 1MB)
+        <input type="file" id="file3" class="file-input" accept="image/*" onchange="handleFileUpload(event, 'frame3', 'file3')">
+    </div>
+
+    <div class="frame" id="frame4" onclick="document.getElementById('file4').click()">
+        點擊上傳圖片 (Max 1MB)
+        <input type="file" id="file4" class="file-input" accept="image/*" onchange="handleFileUpload(event, 'frame4', 'file4')">
+    </div>
+
+    <div class="frame" id="frame5" onclick="document.getElementById('file5').click()">
+        點擊上傳圖片 (Max 1MB)
+        <input type="file" id="file5" class="file-input" accept="image/*" onchange="handleFileUpload(event, 'frame5', 'file5')">
+    </div>
+
+    <script>
+        // 1MB = 1024 * 1024 bytes
+        const MAX_SIZE_BYTES = 1048576; 
+
+        function handleFileUpload(event, frameId, fileInputId) {
+            const file = event.target.files[0];
+            const frame = document.getElementById(frameId);
+            
+            // 清除之前的錯誤訊息和圖片
+            let oldError = frame.querySelector('.error-message');
+            if (oldError) oldError.remove();
+            let oldImg = frame.querySelector('.uploaded-img');
+            if (oldImg) oldImg.remove();
+            
+            // 重置圖框文字
+            frame.innerHTML = `點擊上傳圖片 (Max 1MB)<input type="file" id="${fileInputId}" class="file-input" accept="image/*" onchange="handleFileUpload(event, '${frameId}', '${fileInputId}')">`;
+
+
+            if (file) {
+                // 1. 檢查檔案大小
+                if (file.size > MAX_SIZE_BYTES) {
+                    displayError(frame, '檔案太大！限制為 1MB。');
+                    // 重置 input 欄位，避免重複上傳錯誤檔案
+                    event.target.value = ''; 
+                    return;
+                }
+
+                // 2. 顯示圖片預覽
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.classList.add('uploaded-img');
+                    
+                    // 清除「點擊上傳圖片」的文字
+                    frame.textContent = ''; 
+                    
+                    // 將 input 欄位重新加回 frame，確保上傳功能仍然有效
+                    const fileInput = document.getElementById(fileInputId);
+                    frame.appendChild(fileInput);
+                    
+                    // 將圖片加入圖框
+                    frame.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+
+                // 3. 提示上傳成功 (可選)
+                displayError(frame, '圖片已載入成功！', true);
+            }
+        }
+
+        function displayError(frame, message, isSuccess = false) {
+            const errorDiv = document.createElement('div');
+            errorDiv.classList.add('error-message');
+            if (isSuccess) {
+                errorDiv.style.color = 'lightgreen';
+                errorDiv.style.backgroundColor = '#003300';
+            }
+            errorDiv.textContent = message;
+            frame.appendChild(errorDiv);
+            
+            // 讓訊息顯示並在 3 秒後消失
+            setTimeout(() => {
+                errorDiv.classList.add('visible');
+            }, 10); // 短暫延遲確保 transition 有效
+
+            setTimeout(() => {
+                errorDiv.classList.remove('visible');
+                // 在 transition 結束後移除元素
+                setTimeout(() => {
+                    errorDiv.remove();
+                }, 300); 
+            }, 3000);
+        }
+    </script>
 
 </body>
 </html>
